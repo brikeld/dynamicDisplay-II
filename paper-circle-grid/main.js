@@ -6,9 +6,9 @@ const canvas = document.querySelector('.mainCanvas');
 paper.setup(canvas);
 
 
-const nCols = 20;
-const nRows = 5;
-const radius = 30;
+const nCols = 32;
+const nRows = 20;
+const radius = 40;
 
 const group = new paper.Group();
 
