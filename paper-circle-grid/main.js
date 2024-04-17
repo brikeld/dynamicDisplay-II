@@ -1,87 +1,117 @@
-import 'normalize.css'
-import './style.css'
-import paper from 'paper'
+import "normalize.css";
+import "./style.css";
+import paper from "paper";
 
-const canvas = document.querySelector('.mainCanvas');
+// Constants
+const NCols = 27;
+const NRows = 14;
+const Radius = 50;
+
+// Setup paper.js
+const canvas = document.querySelector(".mainCanvas");
 paper.setup(canvas);
 
+// Create groups for each shape type
+let circleGroup = new paper.Group();
+let rectangleGroup = new paper.Group();
+let triangleGroup = new paper.Group();
 
-const nCols = 32;
-const nRows = 20;
-const radius = 40;
+// Create grids for each shape type
+createGrid(circleGroup, createCircle);
+createGrid(rectangleGroup, createRectangle);
+createGrid(triangleGroup, createTriangle);
 
-const group = new paper.Group();
+// Initially, only show the circle grid
+rectangleGroup.visible = false;
+triangleGroup.visible = false;
 
-for (let col = 0; col < nCols; col++) {
-
-  for (let row = 0; row < nRows; row++) {
-
-    const circle = new paper.Path.Circle({
-      center: paper.view.center,
-      radius,
-      fillColor: 'blue'
-    });
-
-    const x = col * 2 * radius;
-    const y = row * 2 * radius;
-
-    circle.position = new paper.Point(x, y);
-
-    group.addChild(circle);
-
-  }
-
-
+// Shape creation functions
+function createCircle(x, y) {
+  return new paper.Path.Circle({
+    center: new paper.Point(x, y),
+    radius: Radius,
+    fillColor: "blue",
+  });
 }
 
-paper.view.onFrame = function (event) {
-  // rotate the group by 1 degree
-  // get group bounds
-  const bounds = group.bounds;
-  // center view on group
-  paper.view.center = bounds.center;
-};
+function createRectangle(x, y) {
+  return new paper.Path.Rectangle({
+    rectangle: new paper.Rectangle(
+      new paper.Point(x, y),
+      new paper.Size(Radius * 2, Radius * 2)
+    ),
+    fillColor: "blue",
+  });
+}
 
+function createTriangle(x, y) {
+  return new paper.Path.RegularPolygon({
+    center: new paper.Point(x, y),
+    sides: 6,
+    radius: Radius,
+    fillColor: "blue",
+  });
+}
 
+// Grid creation function
+function createGrid(group, createShape) {
+  for (let col = 0; col < NCols; col++) {
+    const x = col * 2 * Radius;
+    for (let row = 0; row < NRows; row++) {
+      const y = row * 2 * Radius;
+      const shape = createShape(x, y);
+      group.addChild(shape);
+    }
+  }
+}
 
-// create circle
+// Hit testing
+let lastHitTestResult = null;
+function getShapeAtPoint(point) {
+  const hitResult = paper.project.hitTest(point);
+  if (hitResult) {
+    lastHitTestResult = hitResult;
+  }
+  return lastHitTestResult && lastHitTestResult.item;
+}
 
-
+// Tool setup
 const tool = new paper.Tool();
 tool.minDistance = 20;
 
-// Define a mousedown and mousedrag handler
 tool.onMouseDrag = (event) => {
-
-  const item = getCircle(event.point);
-
-  if (item)
-    toggleCircle(item, true);
-}
-
-function getCircle(point) {
-  const hitResult = paper.project.hitTest(point);
-  if (!hitResult) return;
-  if (!hitResult.item) return;
-  return hitResult.item;
-}
+  const item = getShapeAtPoint(event.point);
+  if (item) toggleShape(item, true);
+};
 
 tool.onMouseDown = (event) => {
+  const item = getShapeAtPoint(event.point);
+  if (item) toggleShape(item);
+};
 
-  const item = getCircle(event.point);
-  if (item)
-    toggleCircle(item);
-
-}
-
-function toggleCircle(circle, forceActive) {
+// Shape toggling
+function toggleShape(shape, forceActive) {
   let active;
-
   if (forceActive !== undefined) {
-    active = circle.data.active = forceActive;
+    active = shape.data.active = forceActive;
   } else {
-    active = circle.data.active = !circle.data.active;
+    active = shape.data.active = !shape.data.active;
   }
-
-  circle.fillColor = active ? 'red' : 'blue';
+  shape.fillColor = active ? "red" : "blue";
 }
+
+// Key event handling
+window.addEventListener("keydown", function (event) {
+  if (event.code === "Space") {
+    if (circleGroup.visible) {
+      circleGroup.visible = false;
+      rectangleGroup.visible = true;
+    } else if (rectangleGroup.visible) {
+      rectangleGroup.visible = false;
+      triangleGroup.visible = true;
+    } else {
+      triangleGroup.visible = false;
+      circleGroup.visible = true;
+    }
+  }
+});
