@@ -89,7 +89,7 @@ let zLogo, bgImage;
 
 window.preload = function () {
   zLogo = loadImage("/black-logo.png");
-  bgImage = loadImage("/BlaueReiter4.png");
+  bgImage = loadImage("/Brutalism.png");
 };
 
 window.setup = function () {
