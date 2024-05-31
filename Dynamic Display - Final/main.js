@@ -2,13 +2,12 @@ import "normalize.css";
 import "./style.scss";
 import "p5";
 import { Pane } from "tweakpane";
+import * as htmlToImage from 'html-to-image';
 import { preloadImages, initializeLogos, moveLogos, drawLogos, applyNoiseEffect } from './utils';
 
-// Initialize the Tweakpane with a title
 const pane = new Pane();
 pane.title = "My poster";
 
-// List of composite operations for blending images
 const allComposites = [
   "lighter", "multiply", "screen", "overlay",
   "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light",
@@ -18,32 +17,26 @@ const allComposites = [
 let compIndex = 3;
 const PARAMS = {
   xPosition: 0, // X position as a percentage of the canvas width
-  bgColor: "#0000ff", // Background color
+  bgColor: "#6991a9", // Background color
   dimensions: { x: 300, y: 500 }, // Canvas dimensions
   seed: 50, // Random seed
   noiseSeed: 50, // Noise function seed
   stopMovement: false, // Flag to control the movement of logos
   noiseIntensity: 50, // Noise intensity for the noise effect
-  noiseBlendMode: "overlay" // Blend mode for the noise effect
+  noiseBlendMode: "overlay", // Blend mode for the noise effect
+  title: 'Olivero\nToscani', // Set title with line break
+  subtitle: 'Fotografie & Provokation', // Added subtitle parameter
+  footerBgColor: "#6f60bc" // Added footer background color parameter
 };
 
-// Add Tweakpane bindings for various parameters
+pane.addBinding(PARAMS, 'title');
+pane.addBinding(PARAMS, 'subtitle'); // Added binding for subtitle
 pane.addBinding(PARAMS, "xPosition", { min: 0, max: 100 });
 pane.addBinding(PARAMS, "noiseSeed", { min: 0, max: 100, step: 1, label: "z amount" });
 pane.addBinding(PARAMS, "seed", { min: 0, max: 100, step: 1, label: "position seed" });
 pane.addBinding(PARAMS, "noiseIntensity", { min: 0, max: 255, step: 1, label: "noise intensity" });
-
-pane.addBinding(PARAMS, "dimensions", {
-  picker: "inline",
-  x: { min: 1, step: 1 },
-  y: { min: 1, step: 1 },
-}).on("change", (event) => {
-  const { x, y } = event.value;
-  resizeCanvas(x, y); // Resize the canvas when dimensions change
-});
-
 pane.addBinding(PARAMS, "bgColor");
-
+pane.addBinding(PARAMS, "footerBgColor"); // Added binding for footer background color
 pane.addBinding(PARAMS, "noiseBlendMode", {
   options: {
     lighter: "lighter",
@@ -65,11 +58,22 @@ pane.addBinding(PARAMS, "noiseBlendMode", {
 });
 
 pane.addButton({ title: "Save image" }).on("click", () => {
-  saveCanvas('poster', 'png');
+  const node = document.getElementById('poster');
+
+  htmlToImage.toPng(node)
+    .then(function (dataUrl) {
+      const link = document.createElement('a');
+      link.download = 'poster.png';
+      link.href = dataUrl;
+      link.click();
+    })
+    .catch(function (error) {
+      console.error('oops, something went wrong!', error);
+    });
 });
 
 pane.addButton({ title: "STOP" }).on("click", () => {
-  PARAMS.stopMovement = !PARAMS.stopMovement; // Toggle movement
+  PARAMS.stopMovement = !PARAMS.stopMovement; 
 });
 
 let zLogo, bgImage;
@@ -85,18 +89,27 @@ window.preload = function () {
 window.setup = function () {
   const { x, y } = PARAMS.dimensions;
   const p5Canvas = createCanvas(x, y);
-  p5Canvas.parent("app");
+  p5Canvas.parent("poster");
   pixelDensity(1); // Disable retina display scaling
   imageMode(CORNER); // Set image drawing mode to CORNER
 
   // Initialize logos with random positions and speeds
-  logos = initializeLogos(300, width, height, window);
+  logos = initializeLogos(200, width, height, window);
 };
 
 window.draw = function () {
   background(PARAMS.bgColor); // Set background color
 
-  const x = (PARAMS.xPosition / 0) * width; // Calculate x position as a percentage
+  const elTitle = document.querySelector('.title');
+  elTitle.textContent = PARAMS.title; 
+
+  const elSubtitle = document.querySelector('.subtitle'); // Select subtitle element
+  elSubtitle.textContent = PARAMS.subtitle; // Update subtitle text
+
+  const elPosterFooter = document.querySelector('.posterFooter'); // Select poster footer element
+  elPosterFooter.style.backgroundColor = PARAMS.footerBgColor; // Update footer background color
+
+  const x = (PARAMS.xPosition / 100) * width; // Calculate x position as a percentage
 
   image(
     bgImage,

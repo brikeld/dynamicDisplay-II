@@ -1,7 +1,7 @@
 export function preloadImages(p5) {
   return {
-    zLogo: p5.loadImage("/whiteZ.png"),
-    bgImage: p5.loadImage("/SurreallismV2.png"),  //cubism hue-luminosity
+    zLogo: p5.loadImage("/brutalistLogo.png"),
+    bgImage: p5.loadImage("/Brutalism.png"),  //cubism hue-luminosity  //brutalism 
   };
 }
 
@@ -16,7 +16,7 @@ export function initializeLogos(count, width, height, p5) {
       x: column * columnWidth + columnWidth / 2, // Center logo in the column
       y: p5.random(-height, 10),
       speed: p5.random([4, 8, 22]),
-      scale: 30, // Set a fixed scale to avoid overlaps
+      scale: 15, // Set a fixed scale to avoid overlaps
       column: column // Store the column index
     });
   }

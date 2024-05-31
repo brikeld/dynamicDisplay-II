@@ -1,0 +1,73 @@
+// Import the Typekit fonts
+@import url("https://use.typekit.net/pbg3jpk.css");
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  position: relative;
+  padding: 1em;
+  color: #ffffff; // Make all text white
+}
+
+.poster {
+  position: relative;
+}
+
+.posterFooter {
+  position: absolute;
+  z-index: 1000;
+  background: red;
+  width: 100%;
+  padding: 0.3em 0;
+  bottom: 0;
+
+  .title {
+    margin: 0;
+    padding-left: 0.65em;
+    font-family: "newnord", sans-serif; // Apply New Nord Bold font
+    font-weight: 700;
+    font-style: normal;
+    color: #ffffff; // Ensure title text is white
+    white-space: pre-wrap; // Allow line breaks within the title
+    font-size: 1em;
+  }
+
+  .subtitle {
+    margin: 0;
+    padding-left: 1em;
+    font-family: "newnord", sans-serif; // Apply New Nord Regular font
+    font-weight: 400;
+    font-style: normal;
+    color: #ffffff; // Ensure subtitle text is white
+    font-size: 0.7em;
+
+  }
+
+  .muzart-logo {
+    position: absolute;
+    right: 0.55em;
+    bottom: 2.8em;
+    height: 8px; // Adjust the size of the image as needed
+  }
+}
+
+.appContainer {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .p5Canvas {
+    object-fit: scale-down;
+    box-shadow: 0 1em 10em 0 rgba(0, 0, 0, 0.2);
+  }
+}

@@ -1,13 +1,13 @@
 export function preloadImages(p5) {
   return {
-    zLogo: p5.loadImage("/brutalistLogo.png"),
-    bgImage: p5.loadImage("/Brutalism.png"),
+    zLogo: p5.loadImage("/whiteZ.png"),
+    bgImage: p5.loadImage("/Toscani.png"),  
   };
 }
 
 export function initializeLogos(count, width, height, p5) {
   const logos = [];
-  const numColumns = 20; // Increase the number of columns to 20
+  const numColumns = 12; // Increase the number of columns to 20
   const columnWidth = width / numColumns; // Width of each column
 
   for (let i = 0; i < count; i++) {
@@ -16,7 +16,7 @@ export function initializeLogos(count, width, height, p5) {
       x: column * columnWidth + columnWidth / 2, // Center logo in the column
       y: p5.random(-height, 10),
       speed: p5.random([4, 8, 22]),
-      scale: 30, // Set a fixed scale to avoid overlaps
+      scale: 15, // Set a fixed scale to avoid overlaps
       column: column // Store the column index
     });
   }
@@ -36,8 +36,8 @@ export function moveLogos(logos, width, height, stopMovement, p5) {
 }
 
 export function drawLogos(p5, logos, zLogo, width, height, baseCompIndex, allComposites) {
-  p5.push(); // Save current drawing state
-  p5.scale(4); // Scale drawing by a factor of 4
+  p5.push(); 
+  p5.scale(4); 
 
   const numColumns = Math.max(...logos.map(logo => logo.column)) + 1; // Calculate the number of columns
 
@@ -55,5 +55,20 @@ export function drawLogos(p5, logos, zLogo, width, height, baseCompIndex, allCom
   }
 
   p5.drawingContext.globalCompositeOperation = "source-over"; // Reset composite operation to default
-  p5.pop(); // Restore previous drawing state
+  p5.pop(); 
+}
+
+export function applyNoiseEffect(p5, intensity, blendMode) {
+  p5.loadPixels();
+  for (let x = 0; x < p5.width; x++) {
+    for (let y = 0; y < p5.height; y++) {
+      const index = (x + y * p5.width) * 4;
+      const noiseValue = p5.random(-intensity, intensity);
+      p5.pixels[index] = p5.pixels[index] + noiseValue;     // Red
+      p5.pixels[index + 1] = p5.pixels[index + 1] + noiseValue; // Green
+      p5.pixels[index + 2] = p5.pixels[index + 2] + noiseValue; // Blue
+    }
+  }
+  p5.updatePixels();
+  p5.drawingContext.globalCompositeOperation = blendMode; // Set blend mode for noise
 }
