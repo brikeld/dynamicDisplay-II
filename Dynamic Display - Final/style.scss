@@ -67,6 +67,7 @@ body {
   justify-content: center;
 
   .p5Canvas {
+    image-rendering: pixelated;
     object-fit: scale-down;
     box-shadow: 0 1em 10em 0 rgba(0, 0, 0, 0.2);
   }

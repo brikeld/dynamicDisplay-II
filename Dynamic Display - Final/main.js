@@ -2,16 +2,34 @@ import "normalize.css";
 import "./style.scss";
 import "p5";
 import { Pane } from "tweakpane";
-import * as htmlToImage from 'html-to-image';
-import { preloadImages, initializeLogos, moveLogos, drawLogos, applyNoiseEffect } from './utils';
+import * as htmlToImage from "html-to-image";
+import {
+  preloadImages,
+  initializeLogos,
+  moveLogos,
+  drawLogos,
+  applyNoiseEffect,
+} from "./utils";
 
 const pane = new Pane();
 pane.title = "My poster";
 
 const allComposites = [
-  "lighter", "multiply", "screen", "overlay",
-  "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light",
-  "difference", "exclusion", "hue", "saturation", "luminosity",
+  "lighter",
+  "multiply",
+  "screen",
+  "overlay",
+  "darken",
+  "lighten",
+  "color-dodge",
+  "color-burn",
+  "hard-light",
+  "soft-light",
+  "difference",
+  "exclusion",
+  "hue",
+  "saturation",
+  "luminosity",
 ];
 
 let compIndex = 3;
@@ -24,17 +42,41 @@ const PARAMS = {
   stopMovement: false, // Flag to control the movement of logos
   noiseIntensity: 50, // Noise intensity for the noise effect
   noiseBlendMode: "overlay", // Blend mode for the noise effect
-  title: 'Olivero\nToscani', // Set title with line break
-  subtitle: 'Fotografie & Provokation', // Added subtitle parameter
-  footerBgColor: "#6f60bc" // Added footer background color parameter
+  title: "Olivero\nToscani", // Set title with line break
+  subtitle: "Fotografie & Provokation", // Added subtitle parameter
+  footerBgColor: "#6f60bc", // Added footer background color parameter
 };
 
-pane.addBinding(PARAMS, 'title');
-pane.addBinding(PARAMS, 'subtitle'); // Added binding for subtitle
+pane
+  .addBinding(PARAMS, "dimensions", {
+    label: "Canvas size",
+    x: { min: 100 },
+    y: { min: 100 },
+  })
+  .on("change", ({value}) => {
+    resizeCanvas(value.x, value.y);
+  });
+pane.addBinding(PARAMS, "title");
+pane.addBinding(PARAMS, "subtitle"); // Added binding for subtitle
 pane.addBinding(PARAMS, "xPosition", { min: 0, max: 100 });
-pane.addBinding(PARAMS, "noiseSeed", { min: 0, max: 100, step: 1, label: "z amount" });
-pane.addBinding(PARAMS, "seed", { min: 0, max: 100, step: 1, label: "position seed" });
-pane.addBinding(PARAMS, "noiseIntensity", { min: 0, max: 255, step: 1, label: "noise intensity" });
+pane.addBinding(PARAMS, "noiseSeed", {
+  min: 0,
+  max: 100,
+  step: 1,
+  label: "z amount",
+});
+pane.addBinding(PARAMS, "seed", {
+  min: 0,
+  max: 100,
+  step: 1,
+  label: "position seed",
+});
+pane.addBinding(PARAMS, "noiseIntensity", {
+  min: 0,
+  max: 255,
+  step: 1,
+  label: "noise intensity",
+});
 pane.addBinding(PARAMS, "bgColor");
 pane.addBinding(PARAMS, "footerBgColor"); // Added binding for footer background color
 pane.addBinding(PARAMS, "noiseBlendMode", {
@@ -53,27 +95,32 @@ pane.addBinding(PARAMS, "noiseBlendMode", {
     exclusion: "exclusion",
     hue: "hue",
     saturation: "saturation",
-    luminosity: "luminosity"
-  }
+    luminosity: "luminosity",
+  },
 });
 
 pane.addButton({ title: "Save image" }).on("click", () => {
-  const node = document.getElementById('poster');
+  const node = document.getElementById("poster");
 
-  htmlToImage.toPng(node)
+  htmlToImage
+    .toPng(node, {
+      pixelRatio: 5,
+    })
     .then(function (dataUrl) {
-      const link = document.createElement('a');
-      link.download = 'poster.png';
+      const link = document.createElement("a");
+      link.download = "poster.png";
       link.href = dataUrl;
       link.click();
     })
-    .catch(function (error) {
-      console.error('oops, something went wrong!', error);
-    });
+    .catch(
+      function (error) {
+        console.error("oops, something went wrong!", error);
+      }
+    );
 });
 
 pane.addButton({ title: "STOP" }).on("click", () => {
-  PARAMS.stopMovement = !PARAMS.stopMovement; 
+  PARAMS.stopMovement = !PARAMS.stopMovement;
 });
 
 let zLogo, bgImage;
@@ -100,13 +147,13 @@ window.setup = function () {
 window.draw = function () {
   background(PARAMS.bgColor); // Set background color
 
-  const elTitle = document.querySelector('.title');
-  elTitle.textContent = PARAMS.title; 
+  const elTitle = document.querySelector(".title");
+  elTitle.textContent = PARAMS.title;
 
-  const elSubtitle = document.querySelector('.subtitle'); // Select subtitle element
+  const elSubtitle = document.querySelector(".subtitle"); // Select subtitle element
   elSubtitle.textContent = PARAMS.subtitle; // Update subtitle text
 
-  const elPosterFooter = document.querySelector('.posterFooter'); // Select poster footer element
+  const elPosterFooter = document.querySelector(".posterFooter"); // Select poster footer element
   elPosterFooter.style.backgroundColor = PARAMS.footerBgColor; // Update footer background color
 
   const x = (PARAMS.xPosition / 100) * width; // Calculate x position as a percentage
