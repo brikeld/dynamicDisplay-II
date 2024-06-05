@@ -90,7 +90,7 @@ window.setup = function () {
   imageMode(CORNER); // Set image drawing mode to CORNER
 
   // Initialize logos with random positions and speeds
-  logos = initializeLogos(300, width, height, window);
+  logos = initializeLogos(100, width, height, window);
 };
 
 window.draw = function () {

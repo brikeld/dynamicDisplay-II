@@ -1,13 +1,13 @@
 export function preloadImages(p5) {
   return {
-    zLogo: p5.loadImage("/brutalistLogo.png"),
-    bgImage: p5.loadImage("/Brutalism.png"),  //cubism hue-luminosity  //brutalism 
+    zLogo: p5.loadImage("/whiteZ.png"),
+    bgImage: p5.loadImage("/DanFlavin.jpg"),  //cubism hue-luminosity  //brutalism 
   };
 }
 
 export function initializeLogos(count, width, height, p5) {
   const logos = [];
-  const numColumns = 20; // Increase the number of columns to 20
+  const numColumns = 15; // Increase the number of columns to 20
   const columnWidth = width / numColumns; // Width of each column
 
   for (let i = 0; i < count; i++) {
