@@ -1,7 +1,7 @@
 export function preloadImages(p5) {
   return {
     zLogo: p5.loadImage("/whiteZ.png"),
-    bgImage: p5.loadImage("/Toscani.png"),  
+    bgImage: p5.loadImage("/Zach2.jpg"),  
   };
 }
 

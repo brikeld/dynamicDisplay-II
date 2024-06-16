@@ -35,16 +35,16 @@ const allComposites = [
 let compIndex = 3;
 const PARAMS = {
   xPosition: 0, // X position as a percentage of the canvas width
-  bgColor: "#6991a9", // Background color
+  bgColor: "#a58694", // Background color
   dimensions: { x: 300, y: 500 }, // Canvas dimensions
   seed: 50, // Random seed
-  noiseSeed: 50, // Noise function seed
+  noiseSeed: 61, // Noise function seed
   stopMovement: false, // Flag to control the movement of logos
   noiseIntensity: 50, // Noise intensity for the noise effect
   noiseBlendMode: "overlay", // Blend mode for the noise effect
-  title: "Olivero\nToscani", // Set title with line break
-  subtitle: "Fotografie & Provokation", // Added subtitle parameter
-  footerBgColor: "#6f60bc", // Added footer background color parameter
+  title: "Zach\nLieberman", // Set title with line break
+  subtitle: "Computational Aesthetics", // Added subtitle parameter
+  footerBgColor: "#000000", // Added footer background color parameter
 };
 
 pane
@@ -81,9 +81,7 @@ pane.addBinding(PARAMS, "bgColor");
 pane.addBinding(PARAMS, "footerBgColor"); // Added binding for footer background color
 pane.addBinding(PARAMS, "noiseBlendMode", {
   options: {
-    lighter: "lighter",
     multiply: "multiply",
-    screen: "screen",
     overlay: "overlay",
     darken: "darken",
     lighten: "lighten",
@@ -92,10 +90,6 @@ pane.addBinding(PARAMS, "noiseBlendMode", {
     "hard-light": "hard-light",
     "soft-light": "soft-light",
     difference: "difference",
-    exclusion: "exclusion",
-    hue: "hue",
-    saturation: "saturation",
-    luminosity: "luminosity",
   },
 });
 
